@@ -1,39 +1,64 @@
 import axios from 'axios'
-import { Producer } from 'kafkajs'
-import { IPhotoCtx } from '../../interface'
-// import PhotoDomain from './photo.domain'
-// import { IGetTelegramDocumentResponse } from '../interface'
+import {
+  IGetTelegramFileResponse,
+  IPhotoCtx
+} from '../../interface'
+import PhotoDomain from '../domains/photo.domain'
+import { ITelegramPhotoResponseResult } from '../interface'
+import { v4 as uuidv4 } from 'uuid'
 
-export const PhotoService = async (
-  ctx: IPhotoCtx,
-  producer: Producer
-) => {
-  const token = process.env.BOT_TOKEN || ''
-  console.log(JSON.stringify(ctx))
+export default class PhotoService {
+  public static async execute(
+    ctx: IPhotoCtx
+  ): Promise<string[]> {
+    const token = process.env.BOT_TOKEN || ''
+    const kafkaPhotoDataArray: string[] = []
+    const uuid = uuidv4()
 
-  // const response = await axios.get(
-  //   `https://api.telegram.org/bot${token}/getfile?file_id=${ctx.message.document.file_id}`
-  // )
+    const photos: ITelegramPhotoResponseResult[] =
+      ctx.message.photo
+    const indexToRetrieve: number[] =
+      this.getPhotosIndexToRetrieve(photos)
+    // ctx.replyWithSticker('\xF0\x9F\x98\x89')
+    for (const index of indexToRetrieve) {
+      const photo: ITelegramPhotoResponseResult =
+        photos[index]
+      const response = await axios.get(
+        `https://api.telegram.org/bot${token}/getfile?file_id=${photo.file_id}`
+      )
 
-  // const telegramPhoto: IGetTelegramDocumentResponse =
-  //   response.data
+      const telegramPhoto: IGetTelegramFileResponse =
+        response.data
 
-  // console.log(JSON.stringify(telegramPhoto))
+      const kafkaPhotoData: PhotoDomain = new PhotoDomain(
+        photo,
+        telegramPhoto,
+        uuid
+      )
 
-  // const kafkaDocumentData = new PhotoDomain(
-  //   ctx,
-  //   telegramPhoto
-  // )
-  // const payload = kafkaDocumentData.toPayload()
-  // await producer.send({
-  //   topic: 'telegram',
-  //   messages: [
-  //     {
-  //       value: payload
-  //     }
-  //   ]
-  // })
+      kafkaPhotoDataArray.push(kafkaPhotoData.toPayload())
+    }
 
-  // console.log(payload)
-  console.log('Document data retrieved and setted in kafka')
+    return kafkaPhotoDataArray
+  }
+
+  public static getPhotosIndexToRetrieve(
+    photos: ITelegramPhotoResponseResult[]
+  ): number[] {
+    const photosIndexToRetrieve: number[] = []
+
+    if (photos.length > 0) {
+      photosIndexToRetrieve.push(0)
+    }
+
+    if (photos.length > 1) {
+      photosIndexToRetrieve.push(1)
+    }
+
+    if (photos.length > 2) {
+      photosIndexToRetrieve.push(photos.length - 1)
+    }
+
+    return photosIndexToRetrieve
+  }
 }

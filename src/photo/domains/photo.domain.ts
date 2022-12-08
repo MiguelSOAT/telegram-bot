@@ -1,32 +1,32 @@
-// import { IDocumentCtx, IPhotoCtx } from '..'
-// import {
-//   IKafkaTelegramDocumentPayload,
-//   IGetTelegramDocumentResponse
-// } from '..'
+import { IGetTelegramFileResponse } from '../../interface'
+import {
+  IKafkaTelegramPhotoPayload,
+  ITelegramPhotoResponseResult
+} from '../interface'
 
-// export default class PhotoDomain
-//   implements IKafkaTelegramDocumentPayload
-// {
-//   public file_path: string
-//   public file_id: string
-//   public file_name: string
-//   public file_size: number
-//   public mime_type: string
-//   public update_id: number
+export default class PhotoDomain
+  implements IKafkaTelegramPhotoPayload
+{
+  public file_path: string
+  public file_id: string
+  public file_name: string
+  public file_size: number
+  public uuid: string
 
-//   constructor(
-//     ctx: IPhotoCtx,
-//     telegramDocument: IGetTelegramDocumentResponse
-//   ) {
-//     this.file_path = telegramDocument.result.file_path
-//     this.file_id = ctx.message.photo.file_id
-//     this.file_name = ctx.message.document.file_name || ''
-//     this.file_size = ctx.message.document.file_size || 0
-//     this.mime_type = ctx.message.document.mime_type || ''
-//     this.update_id = ctx.update.update_id || 0
-//   }
+  constructor(
+    photo: ITelegramPhotoResponseResult,
+    telegramPhoto: IGetTelegramFileResponse,
+    uuid: string
+  ) {
+    const fileName = `${uuid}_${photo.width}x${photo.height}.jpg`
+    this.file_path = telegramPhoto.result.file_path
+    this.file_id = telegramPhoto.result.file_id
+    this.file_name = fileName || ''
+    this.file_size = telegramPhoto.result.file_size || 0
+    this.uuid = uuid
+  }
 
-//   public toPayload(): string {
-//     return JSON.stringify(this)
-//   }
-// }
+  public toPayload(): string {
+    return JSON.stringify(this)
+  }
+}

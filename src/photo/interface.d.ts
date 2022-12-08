@@ -7,10 +7,10 @@ export interface ITelegramPhotoResponseResult {
   height: number
 }
 
-// "photo": [
-//         {
-//           "file_id": "AgACAgQAAxkBAAM9Y4zh8ecNA_9L5qpq_F88024fmnYAAqi5MRtZKmlQGkrLwyugzHcBAAMCAANzAAMrBA",
-//           "file_unique_id": "AQADqLkxG1kqaVB4",
-//           "file_size": 1558,
-
-//         }
+export interface IKafkaTelegramPhotoPayload {
+  file_path: string
+  file_id: string
+  file_name: string
+  file_size: number
+  uuid: string
+}

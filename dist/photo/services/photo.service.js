@@ -8,33 +8,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PhotoService = void 0;
-// import PhotoDomain from './photo.domain'
-// import { IGetTelegramDocumentResponse } from '../interface'
-const PhotoService = (ctx, producer) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = process.env.BOT_TOKEN || '';
-    console.log(JSON.stringify(ctx));
-    // const response = await axios.get(
-    //   `https://api.telegram.org/bot${token}/getfile?file_id=${ctx.message.document.file_id}`
-    // )
-    // const telegramPhoto: IGetTelegramDocumentResponse =
-    //   response.data
-    // console.log(JSON.stringify(telegramPhoto))
-    // const kafkaDocumentData = new PhotoDomain(
-    //   ctx,
-    //   telegramPhoto
-    // )
-    // const payload = kafkaDocumentData.toPayload()
-    // await producer.send({
-    //   topic: 'telegram',
-    //   messages: [
-    //     {
-    //       value: payload
-    //     }
-    //   ]
-    // })
-    // console.log(payload)
-    console.log('Document data retrieved and setted in kafka');
-});
-exports.PhotoService = PhotoService;
+const axios_1 = __importDefault(require("axios"));
+const photo_domain_1 = __importDefault(require("../domains/photo.domain"));
+const uuid_1 = require("uuid");
+class PhotoService {
+    static execute(ctx) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const token = process.env.BOT_TOKEN || '';
+            const kafkaPhotoDataArray = [];
+            const uuid = (0, uuid_1.v4)();
+            const photos = ctx.message.photo;
+            const indexToRetrieve = this.getPhotosIndexToRetrieve(photos);
+            // ctx.replyWithSticker('\xF0\x9F\x98\x89')
+            for (const index of indexToRetrieve) {
+                const photo = photos[index];
+                const response = yield axios_1.default.get(`https://api.telegram.org/bot${token}/getfile?file_id=${photo.file_id}`);
+                const telegramPhoto = response.data;
+                const kafkaPhotoData = new photo_domain_1.default(photo, telegramPhoto, uuid);
+                kafkaPhotoDataArray.push(kafkaPhotoData.toPayload());
+            }
+            return kafkaPhotoDataArray;
+        });
+    }
+    static getPhotosIndexToRetrieve(photos) {
+        const photosIndexToRetrieve = [];
+        if (photos.length > 0) {
+            photosIndexToRetrieve.push(0);
+        }
+        if (photos.length > 1) {
+            photosIndexToRetrieve.push(1);
+        }
+        if (photos.length > 2) {
+            photosIndexToRetrieve.push(photos.length - 1);
+        }
+        return photosIndexToRetrieve;
+    }
+}
+exports.default = PhotoService;

@@ -27,3 +27,15 @@ export type IPhotoCtx = NarrowedContext<
     update_id: number
   }
 >
+
+export interface ITelegramFileResponseResult {
+  file_id: string
+  file_unique_id: string
+  file_size: number
+  file_path: string
+}
+
+export interface IGetTelegramFileResponse {
+  ok: boolean
+  result: ITelegramFileResponseResult
+}

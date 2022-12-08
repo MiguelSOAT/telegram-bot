@@ -15,8 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const telegraf_1 = require("telegraf");
 const dotenv_1 = __importDefault(require("dotenv"));
 const kafkajs_1 = require("kafkajs");
-const photo_service_1 = require("./photo/services/photo.service");
+// import PhotoService from './photo/services/photo.service'
 const document_actions_1 = __importDefault(require("./document/document.actions"));
+const photo_action_1 = __importDefault(require("./photo/photo.action"));
 dotenv_1.default.config();
 // config
 const brokerURL = process.env.BROKER_URL || 'localhost:9092';
@@ -32,9 +33,10 @@ initialize(producer);
 // fin config
 const bot = new telegraf_1.Telegraf(process.env.BOT_TOKEN || '');
 bot.start((ctx) => ctx.reply('Hola! Soy un bot de prueba'));
-bot.on(['document'], (ctx) => document_actions_1.default.invoke(ctx, producer));
+bot.on('document', (ctx) => document_actions_1.default.invoke(ctx, producer));
 bot.on('photo', (ctx) => {
-    (0, photo_service_1.PhotoService)(ctx, producer);
+    console.log('asdasdas');
+    photo_action_1.default.invoke(ctx, producer);
 });
 bot.launch();
 process.once('SIGINT', () => bot.stop('SIGINT'));

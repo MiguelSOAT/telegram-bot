@@ -1,8 +1,9 @@
 import { Telegraf } from 'telegraf'
 import env from 'dotenv'
 import { Kafka, Producer } from 'kafkajs'
-import { PhotoService } from './photo/services/photo.service'
+// import PhotoService from './photo/services/photo.service'
 import DocumentAction from './document/document.actions'
+import PhotoAction from './photo/photo.action'
 
 env.config()
 
@@ -31,7 +32,8 @@ bot.on('document', (ctx) =>
 )
 
 bot.on('photo', (ctx) => {
-  PhotoService(ctx, producer)
+  console.log('asdasdas')
+  PhotoAction.invoke(ctx, producer)
 })
 
 bot.launch()
