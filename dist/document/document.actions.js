@@ -12,15 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_1 = __importDefault(require("../infrastructure/logger"));
 const document_service_1 = __importDefault(require("./services/document.service"));
 const set_kafka_document_service_1 = __importDefault(require("./services/set-kafka-document.service"));
 class DocumentAction {
     static invoke(ctx, producer) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('Retrieving document data');
+            logger_1.default.info('Retrieving document data');
             const documentJobKafka = yield document_service_1.default.execute(ctx);
             yield set_kafka_document_service_1.default.execute(documentJobKafka, producer);
-            console.log('Document data retrieved and setted in kafka');
+            logger_1.default.info('Document data retrieved and setted in kafka');
         });
     }
 }

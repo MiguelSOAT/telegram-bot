@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = __importDefault(require("axios"));
 const document_domain_1 = __importDefault(require("../domains/document.domain"));
 const uuid_1 = require("uuid");
+const logger_1 = __importDefault(require("../../infrastructure/logger"));
 class DocumentService {
     static execute(ctx) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -23,7 +24,7 @@ class DocumentService {
             const response = yield axios_1.default.get(`https://api.telegram.org/bot${token}/getfile?file_id=${ctx.message.document.file_id}`);
             const telegramDocument = response.data;
             const kafkaDocumentData = new document_domain_1.default(ctx, telegramDocument, uuid);
-            console.log('Document data retrieved successfully');
+            logger_1.default.info('Document data retrieved successfully');
             return kafkaDocumentData.toPayload();
         });
     }

@@ -18,8 +18,9 @@ const kafkajs_1 = require("kafkajs");
 // import PhotoService from './photo/services/photo.service'
 const document_actions_1 = __importDefault(require("./document/document.actions"));
 const photo_action_1 = __importDefault(require("./photo/photo.action"));
+const logger_1 = __importDefault(require("./infrastructure/logger"));
 dotenv_1.default.config();
-// config
+// config kafka
 const brokerURL = process.env.BROKER_URL || 'localhost:9092';
 const kafka = new kafkajs_1.Kafka({
     clientId: 'kafka-telegram-producer',
@@ -33,9 +34,12 @@ initialize(producer);
 // fin config
 const bot = new telegraf_1.Telegraf(process.env.BOT_TOKEN || '');
 bot.start((ctx) => ctx.reply('Hola! Soy un bot de prueba'));
-bot.on('document', (ctx) => document_actions_1.default.invoke(ctx, producer));
+bot.on('document', (ctx) => {
+    logger_1.default.info('Received document for job creation');
+    document_actions_1.default.invoke(ctx, producer);
+});
 bot.on('photo', (ctx) => {
-    console.log('asdasdas');
+    logger_1.default.info('Received photo for job creation');
     photo_action_1.default.invoke(ctx, producer);
 });
 bot.launch();

@@ -5,6 +5,7 @@ import {
 } from '../../interface'
 import DocumentDomain from '../domains/document.domain'
 import { v4 as uuidv4 } from 'uuid'
+import Logger from '../../infrastructure/logger'
 
 export default class DocumentService {
   public static async execute(
@@ -25,7 +26,7 @@ export default class DocumentService {
       uuid
     )
 
-    console.log('Document data retrieved successfully')
+    Logger.info('Document data retrieved successfully')
 
     return kafkaDocumentData.toPayload()
   }
