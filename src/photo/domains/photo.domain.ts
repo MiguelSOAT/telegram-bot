@@ -2,7 +2,7 @@ import { IGetTelegramFileResponse } from '../../interface'
 import {
   IKafkaTelegramPhotoPayload,
   ITelegramPhotoResponseResult
-} from '../interface'
+} from '../interfaces/interface'
 
 export default class PhotoDomain
   implements IKafkaTelegramPhotoPayload

@@ -2,7 +2,7 @@ import {
   IDocumentCtx,
   IGetTelegramFileResponse
 } from '../../interface'
-import { IKafkaTelegramDocumentPayload } from '../interface'
+import { IKafkaTelegramDocumentPayload } from '../interfaces/interface'
 
 export default class DocumentDomain
   implements IKafkaTelegramDocumentPayload

@@ -4,8 +4,10 @@ import {
   IPhotoCtx
 } from '../../interface'
 import PhotoDomain from '../domains/photo.domain'
-import { ITelegramPhotoResponseResult } from '../interface'
+import { ITelegramPhotoResponseResult } from '../interfaces/interface'
 import { v4 as uuidv4 } from 'uuid'
+import { loggers } from 'winston'
+import logger from '../../infrastructure/logger'
 
 export default class PhotoService {
   public static async execute(
@@ -20,13 +22,14 @@ export default class PhotoService {
     const indexToRetrieve: number[] =
       this.getPhotosIndexToRetrieve(photos)
     // ctx.replyWithSticker('\xF0\x9F\x98\x89')
+    logger.info('Index to retrieve')
     for (const index of indexToRetrieve) {
       const photo: ITelegramPhotoResponseResult =
         photos[index]
       const response = await axios.get(
         `https://api.telegram.org/bot${token}/getfile?file_id=${photo.file_id}`
       )
-
+      logger.info('Retrieved photo data from telegram')
       const telegramPhoto: IGetTelegramFileResponse =
         response.data
 

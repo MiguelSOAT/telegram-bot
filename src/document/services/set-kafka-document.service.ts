@@ -1,11 +1,13 @@
 import { Producer } from 'kafkajs'
+import logger from '../../infrastructure/logger'
 
 export default class SetKafkaDocumentService {
   public static async execute(
     documentJob: string,
-    producer: Producer
+    kafkaProducer: Producer
   ): Promise<void> {
-    await producer.send({
+    logger.info('Sending document job to kafka')
+    await kafkaProducer.send({
       topic: 'telegram',
       messages: [
         {

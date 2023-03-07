@@ -1,13 +1,13 @@
 import { Producer } from 'kafkajs'
-import Logger from '../infrastructure/logger'
-import { IDocumentCtx } from '../interface'
-import DocumentService from './services/document.service'
-import SetKafkaDocumentService from './services/set-kafka-document.service'
+import Logger from '../../infrastructure/logger'
+import { IDocumentCtx } from '../../interface'
+import DocumentService from '../services/document.service'
+import SetKafkaDocumentService from '../services/set-kafka-document.service'
 
 export default class DocumentAction {
   static async invoke(
     ctx: IDocumentCtx,
-    producer: Producer
+    kafkaProducer: Producer
   ) {
     Logger.info('Retrieving document data')
 
@@ -17,7 +17,7 @@ export default class DocumentAction {
 
     await SetKafkaDocumentService.execute(
       documentJobKafka,
-      producer
+      kafkaProducer
     )
 
     Logger.info(

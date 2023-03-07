@@ -21,9 +21,7 @@ export default class Logger {
   }
 
   static verbose(message: string, objects?: any) {
-    if (env.ENVIRONMENT === 'development') {
-      this.logger.verbose(this.getData(message, objects))
-    }
+    this.logger.info(this.getData(message, objects))
   }
 
   static error(message: string, objects?: any) {

@@ -1,12 +1,15 @@
 import { Producer } from 'kafkajs'
+import logger from '../../infrastructure/logger'
 
 export default class SetKafkaPhotoService {
   public static async execute(
     photoJobs: string[],
-    producer: Producer
+    kafkaProducer: Producer
   ): Promise<void> {
     for (const photoJob of photoJobs) {
-      await producer.send({
+      logger.info('Sending photo job to kafka')
+
+      await kafkaProducer.send({
         topic: 'telegram',
         messages: [
           {
