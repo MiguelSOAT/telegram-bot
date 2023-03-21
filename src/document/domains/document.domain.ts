@@ -14,6 +14,7 @@ export default class DocumentDomain
   public mime_type: string
   public update_id: number
   public uuid: string
+  public user_id: number
 
   constructor(
     ctx: IDocumentCtx,
@@ -27,6 +28,7 @@ export default class DocumentDomain
     this.mime_type = ctx.message.document.mime_type || ''
     this.update_id = ctx.update.update_id || 0
     this.uuid = uuid
+    this.user_id = ctx.from.id
   }
 
   public toPayload(): string {

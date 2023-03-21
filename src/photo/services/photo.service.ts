@@ -34,6 +34,7 @@ export default class PhotoService {
         response.data
 
       const kafkaPhotoData: PhotoDomain = new PhotoDomain(
+        ctx,
         photo,
         telegramPhoto,
         uuid

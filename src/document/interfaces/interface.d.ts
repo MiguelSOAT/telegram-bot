@@ -6,4 +6,5 @@ export interface IKafkaTelegramDocumentPayload {
   mime_type: string
   update_id: number
   uuid: string
+  user_id: number
 }
