@@ -21,7 +21,7 @@ export default class PhotoService {
       ctx.message.photo
     const indexToRetrieve: number[] =
       this.getPhotosIndexToRetrieve(photos)
-    // ctx.replyWithSticker('\xF0\x9F\x98\x89')
+
     logger.info('Index to retrieve')
     for (const index of indexToRetrieve) {
       const photo: ITelegramPhotoResponseResult =
@@ -33,11 +33,13 @@ export default class PhotoService {
       const telegramPhoto: IGetTelegramFileResponse =
         response.data
 
+      const size = index + 1
       const kafkaPhotoData: PhotoDomain = new PhotoDomain(
         ctx,
         photo,
         telegramPhoto,
-        uuid
+        uuid,
+        size
       )
 
       kafkaPhotoDataArray.push(kafkaPhotoData.toPayload())

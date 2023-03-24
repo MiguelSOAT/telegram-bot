@@ -14,7 +14,9 @@ export default class DocumentDomain
   public mime_type: string
   public update_id: number
   public uuid: string
-  public user_id: number
+  public telegram_token: number
+  public file_extension: string
+  public size = 0
 
   constructor(
     ctx: IDocumentCtx,
@@ -27,8 +29,12 @@ export default class DocumentDomain
     this.file_size = ctx.message.document.file_size || 0
     this.mime_type = ctx.message.document.mime_type || ''
     this.update_id = ctx.update.update_id || 0
+    this.file_extension = ctx.message.document.file_name
+      ? ctx.message.document.file_name.split('.').pop() ||
+        ''
+      : ''
     this.uuid = uuid
-    this.user_id = ctx.from.id
+    this.telegram_token = ctx.from.id
   }
 
   public toPayload(): string {

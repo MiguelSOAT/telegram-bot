@@ -15,22 +15,26 @@ export default class PhotoDomain
   public file_name: string
   public file_size: number
   public uuid: string
-  public user_id: number
+  public telegram_token: number
+  public size: number
+  mime_type = 'image/jpg'
+  file_extension = 'jpg'
 
   constructor(
     ctx: IPhotoCtx,
     photo: ITelegramPhotoResponseResult,
     telegramPhoto: IGetTelegramFileResponse,
-    uuid: string
+    uuid: string,
+    size: number
   ) {
-    console.log(ctx.from.id)
     const fileName = `${uuid}_${photo.width}x${photo.height}.jpg`
     this.file_path = telegramPhoto.result.file_path
     this.file_id = telegramPhoto.result.file_id
     this.file_name = fileName || ''
     this.file_size = telegramPhoto.result.file_size || 0
     this.uuid = uuid
-    this.user_id = ctx.from.id
+    this.telegram_token = ctx.from.id
+    this.size = size
   }
 
   public toPayload(): string {
