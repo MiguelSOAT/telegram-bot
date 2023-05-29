@@ -8,4 +8,5 @@ export interface IKafkaTelegramDocumentPayload {
   uuid: string
   telegram_token: number
   file_extension: string
+  size: number
 }

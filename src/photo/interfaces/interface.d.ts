@@ -15,4 +15,7 @@ export interface IKafkaTelegramPhotoPayload {
   uuid: string
   telegram_token: number
   size: number
+  mime_type: string
+  file_extension: string
+  update_id: number
 }

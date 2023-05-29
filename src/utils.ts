@@ -2,7 +2,7 @@ import { Kafka, Producer } from 'kafkajs'
 import { Telegraf, Context } from 'telegraf'
 import { Update } from 'telegraf/typings/core/types/typegram'
 
-export const forceBotStopWhenProcessIsStopped = (
+export const forceBotStopWhenProcessIsStoppedManually = (
   bot: Telegraf<Context<Update>>
 ) => {
   process.once('SIGINT', () => bot.stop('SIGINT'))

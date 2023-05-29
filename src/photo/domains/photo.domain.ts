@@ -17,8 +17,9 @@ export default class PhotoDomain
   public uuid: string
   public telegram_token: number
   public size: number
-  mime_type = 'image/jpg'
-  file_extension = 'jpg'
+  public mime_type = 'image/jpg'
+  public file_extension = 'jpg'
+  public update_id: number
 
   constructor(
     ctx: IPhotoCtx,
@@ -35,6 +36,7 @@ export default class PhotoDomain
     this.uuid = uuid
     this.telegram_token = ctx.from.id
     this.size = size
+    this.update_id = ctx.update.update_id || 0
   }
 
   public toPayload(): string {

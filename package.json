@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node .",
+    "start:prod": "npm i && npm run build && node .",
     "start:dev": "npx nodemon",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",
@@ -34,6 +35,8 @@
     "fs": "0.0.1-security",
     "kafkajs": "^2.2.3",
     "mongodb": "^5.1.0",
+    "npm": "^9.6.7",
+    "start": "^5.1.0",
     "telegraf": "^4.11.2",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"

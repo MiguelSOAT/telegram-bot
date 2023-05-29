@@ -1,51 +1,52 @@
 import axios from 'axios'
 import {
-  IDocumentCtx,
+  // IVideoCtx,
   IGetTelegramFileResponse
 } from '../../interface'
-import DocumentDomain from '../domains/document.domain'
+import VideoDomain from '../domains/video.domain'
 import { v4 as uuidv4 } from 'uuid'
 import Logger from '../../infrastructure/logger'
+import { IVideoCtx } from '../interfaces/interface'
 
-export default class DocumentService {
+export default class VideoService {
   public static async execute(
-    ctx: IDocumentCtx
+    ctx: IVideoCtx
   ): Promise<string> {
     const token = process.env.BOT_TOKEN || ''
     const uuid = uuidv4()
 
     try {
       const response = await axios.get(
-        `https://api.telegram.org/bot${token}/getfile?file_id=${ctx.message.document.file_id}`
+        `https://api.telegram.org/bot${token}/getfile?file_id=${ctx.message.video.file_id}`
       )
 
-      const telegramDocument: IGetTelegramFileResponse =
+      const telegramVideo: IGetTelegramFileResponse =
         response.data
-      const kafkaDocumentData = new DocumentDomain(
+      const kafkaVideoData = new VideoDomain(
         ctx,
-        telegramDocument,
+        telegramVideo,
         uuid
       )
 
-      Logger.info('Document data retrieved successfully')
+      Logger.info('Video data retrieved successfully')
 
       ctx.reply('✅', {
         reply_to_message_id: ctx.message.message_id
       })
 
-      return kafkaDocumentData.toPayload()
+      return kafkaVideoData.toPayload()
     } catch (error: any) {
       ctx.reply(
-        '❌ File is too big 🙁. The size limit set by Telegram is 20MB for chat bots.',
+        '❌ File is too big 🙁. The size limit set by Telegram is 20MB',
         {
           reply_to_message_id: ctx.message.message_id
         }
       )
-      Logger.error('Error while retrieving document', {
+      Logger.error('Error while retrieving video', {
         error: error
       })
 
-      throw new Error('Error retrieving document data')
+      throw new Error('Error retrieving video data')
     }
   }
 }

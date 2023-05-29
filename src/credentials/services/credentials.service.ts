@@ -6,6 +6,7 @@ import {
 import MongoDB from '../../infrastructure/mongodb'
 import { MongoClient } from 'mongodb'
 import CredentialsDomain from '../domains/credentials.domain'
+import exp from 'constants'
 
 export default class CredentialsService {
   public static async execute(
@@ -17,6 +18,10 @@ export default class CredentialsService {
       .collection<ITelegramCredentials>('credentials')
 
     const credentials = new CredentialsDomain(ctx)
+    const expirationDate = new Date(
+      Date.now() + 15 * 60 * 1000
+    )
+    const expirationDateUTC = expirationDate.toISOString()
 
     await mongoCollection.updateOne(
       {
@@ -24,7 +29,8 @@ export default class CredentialsService {
       },
       {
         $set: {
-          securityToken: credentials.securityToken
+          securityToken: credentials.securityToken,
+          expirationDate: expirationDateUTC
         }
       },
       {

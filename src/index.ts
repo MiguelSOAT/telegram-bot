@@ -5,10 +5,11 @@ import PhotoAction from './photo/actions/photo.action'
 import Logger from './infrastructure/logger'
 import { message } from 'telegraf/filters'
 import {
-  forceBotStopWhenProcessIsStopped,
+  forceBotStopWhenProcessIsStoppedManually,
   initializeKafka
 } from './utils'
 import CredentialsAction from './credentials/actions/credentials.actions'
+import VideoAction from './video/actions/video.actions'
 
 env.config()
 
@@ -19,7 +20,7 @@ const main = async () => {
 
   bot.start((ctx) =>
     ctx.reply(
-      'Hello! 😎 I am a bot that will help you to sync your photos and documents with http://cloud.miguelsoat.com/ \n\nIf you want to get your credentials, please type /credentials'
+      process.env.TELEGRAM_BOT_START_MESSAGE || 'Hello!'
     )
   )
 
@@ -33,6 +34,11 @@ const main = async () => {
     PhotoAction.invoke(ctx, kafkaProducer)
   })
 
+  bot.on(message('video'), (ctx) => {
+    Logger.info('Received new video for job creation')
+    VideoAction.invoke(ctx, kafkaProducer)
+  })
+
   bot.command('credentials', async (ctx) => {
     const botReply = await CredentialsAction.invoke(ctx)
     ctx.reply(botReply)
@@ -40,7 +46,7 @@ const main = async () => {
 
   bot.launch()
 
-  forceBotStopWhenProcessIsStopped(bot)
+  forceBotStopWhenProcessIsStoppedManually(bot)
 }
 
 main()

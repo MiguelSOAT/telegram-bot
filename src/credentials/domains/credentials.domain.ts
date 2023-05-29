@@ -17,6 +17,6 @@ export default class CredentialsDomain
   }
 
   public toString(): string {
-    return `🥷 Please, for security do not share this information! \n\nTelegram ID: ${this.telegramId}\nSecurity Token: ${this.securityToken}`
+    return `🥷 Please, for security do not share this information! \n\nTelegram ID: ${this.telegramId}\nSecurity Token: ${this.securityToken}\n\nThe security token will expire in 15 minutes.`
   }
 }

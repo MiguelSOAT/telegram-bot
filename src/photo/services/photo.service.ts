@@ -45,6 +45,10 @@ export default class PhotoService {
       kafkaPhotoDataArray.push(kafkaPhotoData.toPayload())
     }
 
+    ctx.reply('✅', {
+      reply_to_message_id: ctx.message.message_id
+    })
+
     return kafkaPhotoDataArray
   }
 
